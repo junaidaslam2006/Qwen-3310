@@ -1,10 +1,16 @@
+import { useState } from "react";
 import { PixelText } from "./PixelText";
 import { PixelIcon } from "./PixelIcon";
 import { LcdClock } from "./LcdClock";
 import { C } from "../engine/colors";
 import { SPRITE_BATTERY, SPRITE_SIGNAL, SPRITE_FLOWER, SPRITE_STAR } from "../engine/sprites";
+import { music, type MusicState } from "../engine/music";
 
 export function Entry({ onEnter }: { onEnter: () => void }) {
+  const [musicState, setMusicState] = useState<MusicState>("off");
+
+  const musicLabel = musicState === "on" ? "[ MUSIC: ON ]" : "[ PLAY MUSIC ]";
+
   return (
     <div
       className="entry"
@@ -43,6 +49,17 @@ export function Entry({ onEnter }: { onEnter: () => void }) {
         <div className="enter-blink">
           <PixelText text="[ TAP TO ENTER ]" scale={2} color={C.ink} />
         </div>
+        <button
+          className="music-btn"
+          aria-label="toggle background music"
+          onClick={(e) => {
+            e.stopPropagation();
+            void music.toggle().then(setMusicState);
+          }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <PixelText text={musicLabel} scale={2} color={C.ink} />
+        </button>
       </div>
 
       <div className="entry-foot">
